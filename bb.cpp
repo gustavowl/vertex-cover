@@ -6,7 +6,7 @@
 #include "vertex.h"
 #include "edge.h"
 
-void read_graph(FILE* file, int* num_vertices, int* num_edges) {
+void read_graph(FILE* file, Vertex **vertices, int* num_vertices, Edge **edges, int* num_edges) {
 	char buffer[127];
 	fgets(buffer, 127, (FILE*)file);
 
@@ -21,14 +21,15 @@ void read_graph(FILE* file, int* num_vertices, int* num_edges) {
 		}
 	}
 
-	Vertex *vertices[*num_vertices];
+	vertices = new Vertex*[*num_vertices];
 	for (int i = 0; i < *num_vertices; i++) {
 		vertices[i] = new Vertex();
 	}
 
-	Edge *edges[*num_edges];
+	edges = new Edge*[*num_edges];
 	int index_v1, index_v2;
 	index_v1 = index_v2 = 0;
+	std::cout << "-----EDGES-----" << std::endl;
 	for (int i = 0; i < *num_edges; i++) {
 		fgets(buffer, 127, (FILE*)file);
 		substring = strtok(buffer, " ");
@@ -47,6 +48,15 @@ void read_graph(FILE* file, int* num_vertices, int* num_edges) {
 		vertices[index_v1]->degree++;
 		vertices[index_v2]->edges.push_back(edges[i]);
 		vertices[index_v2]->degree++;
+
+		std::cout << edges[i] << ": " << vertices[index_v1] << " " << vertices[index_v2] << std::endl;
+	}
+	std::cout <<std::endl << "-----VERTICES-----";
+	for (int i = 0; i < *num_vertices; i++) {
+		std::cout << std::endl << vertices[i] << ": ";
+		for (int j = 0; j < vertices[i]->degree; j++) {
+			std::cout << vertices[i]->edges[j] << " ";
+		}
 	}
 }
 
@@ -63,8 +73,10 @@ int main(int argc, char* argv[]) {
 			return 1;
 		}
 
+		Vertex **vertices;
+		Edge **edges;
 		int num_vertices, num_edges;
-		read_graph(file, &num_vertices, &num_edges);
+		read_graph(file, vertices, &num_vertices, edges, &num_edges);
 
 		printf("exit success:\n%i %i\n", num_vertices, num_edges);
 		return fclose(file);
