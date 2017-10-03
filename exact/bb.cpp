@@ -6,7 +6,7 @@
 #include "vertex.h"
 #include "edge.h"
 
-void read_graph(FILE* file, Vertex **vertices, int* num_vertices, Edge **edges, int* num_edges) {
+int read_graph(FILE* file, Vertex **vertices, int* num_vertices, Edge **edges, int* num_edges) {
 	char buffer[127];
 	fgets(buffer, 127, (FILE*)file);
 
@@ -29,6 +29,7 @@ void read_graph(FILE* file, Vertex **vertices, int* num_vertices, Edge **edges, 
 	edges = new Edge*[*num_edges];
 	int index_v1, index_v2;
 	index_v1 = index_v2 = 0;
+	int max_degree = 0;
 	std::cout << "-----EDGES-----" << std::endl;
 	for (int i = 0; i < *num_edges; i++) {
 		fgets(buffer, 127, (FILE*)file);
@@ -46,11 +47,18 @@ void read_graph(FILE* file, Vertex **vertices, int* num_vertices, Edge **edges, 
 
 		vertices[index_v1]->edges.push_back(edges[i]);
 		vertices[index_v1]->degree++;
+		if (vertices[index_v1]->degree > max_degree) {
+			max_degree = vertices[index_v1]->degree;
+		}
 		vertices[index_v2]->edges.push_back(edges[i]);
 		vertices[index_v2]->degree++;
+		if (vertices[index_v2]->degree > max_degree) {
+			max_degree = vertices[index_v2]->degree;
+		}
 
 		std::cout << edges[i] << ": " << vertices[index_v1] << " " << vertices[index_v2] << std::endl;
 	}
+
 	std::cout <<std::endl << "-----VERTICES-----";
 	for (int i = 0; i < *num_vertices; i++) {
 		std::cout << std::endl << vertices[i] << ": ";
@@ -58,6 +66,8 @@ void read_graph(FILE* file, Vertex **vertices, int* num_vertices, Edge **edges, 
 			std::cout << vertices[i]->edges[j] << " ";
 		}
 	}
+
+	return max_degree;
 }
 
 int main(int argc, char* argv[]) {
@@ -75,11 +85,14 @@ int main(int argc, char* argv[]) {
 
 		Vertex **vertices;
 		Edge **edges;
-		int num_vertices, num_edges;
-		read_graph(file, vertices, &num_vertices, edges, &num_edges);
+		int num_vertices, num_edges, max_degree;
+		max_degree = read_graph(file, vertices, &num_vertices, edges, &num_edges);
 
-		printf("exit success:\n%i %i\n", num_vertices, num_edges);
-		return fclose(file);
+		printf("exit success:\n%i %i %i\n", num_vertices, num_edges, max_degree);
+		fclose(file);
+
+
+		return 0;
 	}
 	else {
 		printf("Invalid number of arguments. Only one expected: filename\n");
