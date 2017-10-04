@@ -80,7 +80,7 @@ int remove_vertex(std::vector<Vertex*>* vertices, int max_degree, Vertex** remov
 	for (int i = 0; i < (*removed_vertex)->edges.size(); i++) {
 		Edge* e = (*removed_vertex)->edges[i];
 		Vertex* neighbour = e->getNeighbourOf(*removed_vertex);
-
+/*
 		//find position of neighbour in vertices vector and removes it
 		for (int j = 0; j < vertices[neighbour->degree].size(); j++) {
 			if (vertices[neighbour->degree][j] == neighbour) {
@@ -93,12 +93,12 @@ int remove_vertex(std::vector<Vertex*>* vertices, int max_degree, Vertex** remov
 		neighbour->removeEdge(e);
 
 		//update position in vertices vector
-		vertices[neighbour->degree].push_back(neighbour);
+		vertices[neighbour->degree].push_back(neighbour);*/
 	}
 
 	//searches for vertex with largest degree
 	for (; max_degree >= 0; max_degree--) {
-		if (vertices[max_degree] > 0) {
+		if (vertices[max_degree].size() > 0) {
 			return max_degree;
 		}
 	}
@@ -128,8 +128,8 @@ bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int unc
 	int l = k;
 	for (int i = vertices_size - 1; i > 0 && l > 0; i--) {
 		if (vertices[i].size() > 0) {
-			bound += std::min(vertices[i].size(), l) * i;
-			l -= vertices.size();
+			bound += std::min((int)vertices[i].size(), l) * i;
+			l -= vertices[i].size();
 			/*
 			if (vertices[i].size() <= l) {
 				bound += vertices[i].size() * i;
@@ -185,7 +185,7 @@ int main(int argc, char* argv[]) {
 			std::cout << i << ": " << vertices_by_degree[i].size() << std::endl;
 		}
 
-		min_cover(vertices_by_degree, max_degree + 1);
+		min_cover(vertices_by_degree, max_degree + 1, k, num_edges, num_edges);
 	}
 	else {
 		std::cout << "Invalid number of arguments. Two arguments expected:" << std::endl <<
