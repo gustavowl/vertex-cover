@@ -73,8 +73,8 @@ int read_graph(FILE* file, Vertex ***vertices, int* num_vertices, Edge ***edges,
 
 //returns new max_degree after removing the vertex
 int remove_vertex(std::vector<Vertex*>* vertices, int max_degree, Vertex** removed_vertex) {
-	*removed_vertex = vertices[max_degree].back();
-	vertices[max_degree].pop_back();
+	*removed_vertex = vertices[max_degree][0];
+	vertices[max_degree].erase(vertices[max_degree].begin());
 
 	//adjust degree of all neighbours
 	for (int i = 0; i < (*removed_vertex)->edges.size(); i++) {
@@ -89,11 +89,10 @@ int remove_vertex(std::vector<Vertex*>* vertices, int max_degree, Vertex** remov
 			}
 		}
 
-/*
 		neighbour->removeEdge(e);
 
 		//update position in vertices vector
-		vertices[neighbour->degree].push_back(neighbour);*/
+		vertices[neighbour->degree].push_back(neighbour);
 	}
 
 	//searches for vertex with largest degree
@@ -146,8 +145,8 @@ bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int unc
 	}
 
 	//get new node
-	int max_degree = vertices_size;
-	//remove_vertex
+	Vertex* removed_vertex;
+	vertices_size = remove_vertex(vertices, vertices_size - 1, &removed_vertex) + 1;
 }
 
 int main(int argc, char* argv[]) {
