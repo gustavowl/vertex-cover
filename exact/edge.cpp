@@ -22,3 +22,10 @@ Vertex* Edge::getNeighbourOf(Vertex* v) {
 		return vertices[0];
 	return nullptr;
 }
+
+bool isVertexAttached(Vertex* v) {
+	if (vertices[0] == v || vertices[1] == v) {
+		return true;
+	}
+	return false;
+}

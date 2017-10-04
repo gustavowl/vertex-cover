@@ -13,6 +13,7 @@ class Edge {
 		Edge(bool covered, Vertex* v1, Vertex* v2);
 
 		Vertex* getNeighbourOf(Vertex* v);
+		bool isVertexAttached(Vertex* v);
 };
 
 #endif
