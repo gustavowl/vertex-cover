@@ -71,6 +71,40 @@ int read_graph(FILE* file, Vertex ***vertices, int* num_vertices, Edge ***edges,
 	return max_degree;
 }
 
+//returns new max_degree after removing the vertex
+int remove_vertex(std::vector<Vertex*>* vertices, int max_degree, Vertex** removed_vertex) {
+	*removed_vertex = vertices[max_degree].back();
+	vertices[max_degree].pop_back();
+
+	//adjust degree of all neighbours
+	for (int i = 0; i < (*removed_vertex)->edges.size(); i++) {
+		Edge* e = (*removed_vertex)->edges[i];
+		Vertex* neighbour = e->getNeighbourOf(*removed_vertex);
+
+		//find position of neighbour in vertices vector and removes it
+		for (int j = 0; j < vertices[neighbour->degree].size(); j++) {
+			if (vertices[neighbour->degree][j] == neighbour) {
+				vertices[neighbour->degree].erase(vertices[neighbour->degree].begin());
+				break;
+			}
+		}
+
+
+		neighbour->removeEdge(e);
+
+		//update position in vertices vector
+		vertices[neighbour->degree].push_back(neighbour);
+	}
+
+	//searches for vertex with largest degree
+	for (; max_degree >= 0; max_degree--) {
+		if (vertices[max_degree] > 0) {
+			return max_degree;
+		}
+	}
+	return -1;
+}
+
 bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int uncovered_actual, int uncovered_best) {
 
 	if (uncovered_best == 0) { //prunes tree
@@ -113,6 +147,7 @@ bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int unc
 
 	//get new node
 	int max_degree = vertices_size;
+	//remove_vertex
 }
 
 int main(int argc, char* argv[]) {
