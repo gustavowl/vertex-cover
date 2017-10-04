@@ -20,3 +20,18 @@ void Vertex::removeEdge(Edge* e) {
 		}
 	}
 }
+
+void Vertex::setFree() {
+	free = true;
+	covered = false;
+}
+
+void Vertex::setCovered() {
+	free = false;
+	covered = true;
+}
+
+void Vertex::setUncovered() {
+	free = false;
+	covered = false;
+}

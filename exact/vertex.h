@@ -15,6 +15,10 @@ class Vertex {
 		Vertex(bool free, bool covered, int degree);
 
 		void removeEdge(Edge* e);
+
+		void setFree();
+		void setCovered();
+		void setUncovered();
 };
 
 #include "edge.h"
