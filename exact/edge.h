@@ -11,6 +11,8 @@ class Edge {
 		Edge();
 		Edge(Vertex* v1, Vertex* v2);
 		Edge(bool covered, Vertex* v1, Vertex* v2);
+
+		Vertex* getNeighbourOf(Vertex* v);
 };
 
 #endif

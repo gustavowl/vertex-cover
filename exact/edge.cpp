@@ -14,3 +14,11 @@ Edge::Edge(bool covered, Vertex* v1, Vertex* v2) {
 	this->vertices[0] = v1;
 	this->vertices[1] = v2;
 }
+
+Vertex* Edge::getNeighbourOf(Vertex* v) {
+	if (vertices[0] == v)
+		return vertices[1];
+	else if (vertices[1] == v)
+		return vertices[0];
+	return nullptr;
+}
