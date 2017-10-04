@@ -23,7 +23,7 @@ Vertex* Edge::getNeighbourOf(Vertex* v) {
 	return nullptr;
 }
 
-bool isVertexAttached(Vertex* v) {
+bool Edge::isVertexAttached(Vertex* v) {
 	if (vertices[0] == v || vertices[1] == v) {
 		return true;
 	}

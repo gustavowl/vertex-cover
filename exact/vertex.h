@@ -20,6 +20,9 @@ class Vertex {
 		void setFree();
 		void setCovered();
 		void setUncovered();
+
+		bool isFree();
+		bool isCovered();
 };
 
 #include "edge.h"

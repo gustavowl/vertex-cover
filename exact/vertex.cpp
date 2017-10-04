@@ -15,6 +15,7 @@ Vertex::Vertex(bool free, bool covered, int degree) {
 void Vertex::addEdge(Edge* e) {
 	if (e->isVertexAttached(this)) {
 		edges.push_back(e);
+		degree++;
 	}
 }
 
@@ -40,4 +41,12 @@ void Vertex::setCovered() {
 void Vertex::setUncovered() {
 	free = false;
 	covered = false;
+}
+
+bool Vertex::isFree() {
+	return free;
+}
+
+bool Vertex::isCovered() {
+	return !free && covered;
 }
