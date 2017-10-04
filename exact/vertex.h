@@ -23,6 +23,8 @@ class Vertex {
 
 		bool isFree();
 		bool isCovered();
+		bool isUncovered();
+		bool hasUncoveredNeighbour();
 };
 
 #include "edge.h"

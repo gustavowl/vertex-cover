@@ -180,12 +180,16 @@ bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int unc
 
 	//readjust degrees of all neighbours
 	vertices_size = add_vertex_edges(vertices, vertices_size - 1, removed_vertex) + 1;
-	//mark vertex as uncovered
-	removed_vertex->setUncovered();
-	uncovered_actual += removed_vertex->degree;
-	k++;
-	if ( min_cover(vertices, vertices_size, k, uncovered_actual, uncovered_best) ) {
-		return true;
+	//if it has an uncovered neighbour, removed_vertex cannot be uncovered, otherwise
+	//at least one edge would not be covered
+	if (!removed_vertex->hasUncoveredNeighbour()) {
+		//mark vertex as uncovered
+		removed_vertex->setUncovered();
+		uncovered_actual += removed_vertex->degree;
+		k++;
+		if ( min_cover(vertices, vertices_size, k, uncovered_actual, uncovered_best) ) {
+			return true;
+		}
 	}
 
 	//backtracks

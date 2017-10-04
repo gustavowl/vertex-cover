@@ -50,3 +50,18 @@ bool Vertex::isFree() {
 bool Vertex::isCovered() {
 	return !free && covered;
 }
+
+bool Vertex::isUncovered() {
+	return !free && !covered;	
+}
+
+bool Vertex::hasUncoveredNeighbour() {
+	Vertex* v;
+	for (int i = 0; i < degree; i++) {
+		v = edges[i]->getNeighbourOf(this);
+		if (v->isUncovered()) {
+			return true;
+		}
+	}
+	return false;
+}
