@@ -81,7 +81,7 @@ int remove_vertex(std::vector<Vertex*>* vertices, int max_degree, Vertex** remov
 		Edge* e = (*removed_vertex)->edges[i];
 		Vertex* neighbour = e->getNeighbourOf(*removed_vertex);
 
-		//find position of neighbour in vertices vector and removes it
+		//finds position of neighbour in vertices vector and removes it
 		for (int j = 0; j < vertices[neighbour->degree].size(); j++) {
 			if (vertices[neighbour->degree][j] == neighbour) {
 				vertices[neighbour->degree].erase(vertices[neighbour->degree].begin() + j);
@@ -104,9 +104,36 @@ int remove_vertex(std::vector<Vertex*>* vertices, int max_degree, Vertex** remov
 	return -1;
 }
 
+//returns new max_degree after re-adding the vertex's edges do its neighbours
+int add_vertex_edges(std::vector<Vertex*>* vertices, int max_degree, Vertex* removed_vertex) {
+	//adjust degrees of all neighbours
+	for (int i = 0; i < removed_vertex->edges.size(); i++) {
+		Edge e* = removed_vertex->edges[i];
+		Vertex* neighbour = e->getNeighbourOf(removed_vertex);
+
+		//finds position of neighbour in vertices vector and removes it
+		for (int j = 0; j < vertices[neighbour->degree].size(); j++) {
+			if (vertices[neighbour->degree][j] == neighbour) {
+				vertices[neighbour->degree].erase(vertices[neighbour->degree].begin() + j);
+				break;
+			}
+		}
+
+		neighbour->addEdge(e);
+
+		//update position in vertices vector
+		vertices[neighbour->degree].push_back(neighbour);
+		if (neighbour->degree > max_degree) {
+			max_degree = neighbour->degree;
+		}
+	}
+
+	return max_degree;
+}
+
 bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int uncovered_actual, int uncovered_best) {
 
-	if (uncovered_best == 0) { //prunes tree
+	if (uncovered_actual == 0 || uncovered_best == 0) { //prunes tree
 		return true;
 	}
 
@@ -129,24 +156,30 @@ bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int unc
 		if (vertices[i].size() > 0) {
 			bound += std::min((int)vertices[i].size(), l) * i;
 			l -= vertices[i].size();
-			/*
-			if (vertices[i].size() <= l) {
-				bound += vertices[i].size() * i;
-				l -= vertices.size();
-			}
-			else {
-				bound += i * l;
-				l -= vertices.size();
-			}*/
 		}
 	}
 	if (uncovered_actual - bound > uncovered_best) {
 		return false;
 	}
 
-	//get new node
+	//cover a new vertex
 	Vertex* removed_vertex;
 	vertices_size = remove_vertex(vertices, vertices_size - 1, &removed_vertex) + 1;
+	removed_vertex->setCovered();
+	uncovered_actual -= removed_vertex->degree;
+	k--;
+	if ( min_cover(vertices, vertices_size, k, uncovered_actual, uncovered_best) ){
+		return true;
+	}
+
+	//readjust degrees of all neighbours
+	vertices_size = add_vertex_edges(vertices, vertices_size - 1, removed_vertex) + 1;
+	//mark vertex as uncovered
+	removed_vertex->setUncovered();
+	uncovered_actual += removed_vertex->degree;
+	k++;
+
+	removed_vertex->setFree();
 }
 
 int main(int argc, char* argv[]) {
@@ -184,7 +217,8 @@ int main(int argc, char* argv[]) {
 			std::cout << i << ": " << vertices_by_degree[i].size() << std::endl;
 		}
 
-		min_cover(vertices_by_degree, max_degree + 1, k, num_edges, num_edges);
+		std::cout << k << "-sized vertex cover? " <<	min_cover(vertices_by_degree, 
+			max_degree + 1, k, num_edges, num_edges) << std::endl;
 	}
 	else {
 		std::cout << "Invalid number of arguments. Two arguments expected:" << std::endl <<
