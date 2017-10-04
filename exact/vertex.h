@@ -14,6 +14,7 @@ class Vertex {
 		Vertex();
 		Vertex(bool free, bool covered, int degree);
 
+		void addEdge(Edge* e);
 		void removeEdge(Edge* e);
 
 		void setFree();

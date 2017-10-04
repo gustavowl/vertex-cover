@@ -12,6 +12,12 @@ Vertex::Vertex(bool free, bool covered, int degree) {
 	this->degree = degree;
 }
 
+void Vertex::addEdge(Edge* e) {
+	if (e->isVertexAttached(this)) {
+		edges.push_back(e);
+	}
+}
+
 void Vertex::removeEdge(Edge* e) {
 	for (int i = 0; i < degree; i++) {
 		if (edges[i] == e) {
