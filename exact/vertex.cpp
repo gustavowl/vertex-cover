@@ -11,3 +11,12 @@ Vertex::Vertex(bool free, bool covered, int degree) {
 	this->covered = covered;
 	this->degree = degree;
 }
+
+void Vertex::removeEdge(Edge* e) {
+	for (int i = 0; i < degree; i++) {
+		if (edges[i] == e) {
+			edges.erase(edges.begin() + i);
+			degree--;
+		}
+	}
+}

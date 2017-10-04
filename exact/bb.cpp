@@ -80,16 +80,16 @@ int remove_vertex(std::vector<Vertex*>* vertices, int max_degree, Vertex** remov
 	for (int i = 0; i < (*removed_vertex)->edges.size(); i++) {
 		Edge* e = (*removed_vertex)->edges[i];
 		Vertex* neighbour = e->getNeighbourOf(*removed_vertex);
-/*
+
 		//find position of neighbour in vertices vector and removes it
 		for (int j = 0; j < vertices[neighbour->degree].size(); j++) {
 			if (vertices[neighbour->degree][j] == neighbour) {
-				vertices[neighbour->degree].erase(vertices[neighbour->degree].begin());
+				vertices[neighbour->degree].erase(vertices[neighbour->degree].begin() + j);
 				break;
 			}
 		}
 
-
+/*
 		neighbour->removeEdge(e);
 
 		//update position in vertices vector

@@ -13,6 +13,8 @@ class Vertex {
 
 		Vertex();
 		Vertex(bool free, bool covered, int degree);
+
+		void removeEdge(Edge* e);
 };
 
 #include "edge.h"
