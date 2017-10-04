@@ -5,6 +5,7 @@
 #include <vector>
 #include "vertex.h"
 #include "edge.h"
+#include <algorithm>
 
 int read_graph(FILE* file, Vertex ***vertices, int* num_vertices, Edge ***edges, int* num_edges) {
 	char buffer[127];
@@ -70,6 +71,50 @@ int read_graph(FILE* file, Vertex ***vertices, int* num_vertices, Edge ***edges,
 	return max_degree;
 }
 
+bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int uncovered_actual, int uncovered_best) {
+
+	if (uncovered_best == 0) { //prunes tree
+		return true;
+	}
+
+	if (k == 0) {
+		if (uncovered_actual < uncovered_best) {
+			uncovered_best = uncovered_actual;
+			if (uncovered_best > 0) {
+				return false;
+			}
+			return true;
+			//clear the set of stored configurations?
+		}
+		//store configuration
+	}
+
+	//checks bound condition
+	int bound = 0;
+	int l = k;
+	for (int i = vertices_size - 1; i > 0 && l > 0; i--) {
+		if (vertices[i].size() > 0) {
+			bound += std::min(vertices[i].size(), l) * i;
+			l -= vertices.size();
+			/*
+			if (vertices[i].size() <= l) {
+				bound += vertices[i].size() * i;
+				l -= vertices.size();
+			}
+			else {
+				bound += i * l;
+				l -= vertices.size();
+			}*/
+		}
+	}
+	if (uncovered_actual - bound > uncovered_best) {
+		return false;
+	}
+
+	//get new node
+	int max_degree = vertices_size;
+}
+
 int main(int argc, char* argv[]) {
 
 	if (argc == 3) {
@@ -104,6 +149,8 @@ int main(int argc, char* argv[]) {
 		for (int i = 0; i < max_degree + 1; i++) {
 			std::cout << i << ": " << vertices_by_degree[i].size() << std::endl;
 		}
+
+		min_cover(vertices_by_degree, max_degree + 1);
 	}
 	else {
 		std::cout << "Invalid number of arguments. Two arguments expected:" << std::endl <<
