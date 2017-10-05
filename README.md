@@ -1,3 +1,5 @@
+ALL THE FOLLOWING COMMANDS ARE SUPPOSED TO BE RUN AT THE exact/ directory
+
 Compile:
 
 g++ *.cpp -std=c++11 -o vc
