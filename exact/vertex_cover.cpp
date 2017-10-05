@@ -6,6 +6,7 @@
 #include "vertex.h"
 #include "edge.h"
 #include <algorithm>
+#include <chrono>
 
 int read_graph(FILE* file, Vertex ***vertices, int* num_vertices, Edge ***edges, int* num_edges) {
 	char buffer[127];
@@ -31,7 +32,7 @@ int read_graph(FILE* file, Vertex ***vertices, int* num_vertices, Edge ***edges,
 	int index_v1, index_v2;
 	index_v1 = index_v2 = 0;
 	int max_degree = 0;
-	std::cout << "-----EDGES-----" << std::endl;
+	//std::cout << "-----EDGES-----" << std::endl;
 	for (int i = 0; i < *num_edges; i++) {
 		fgets(buffer, 127, (FILE*)file);
 		substring = strtok(buffer, " ");
@@ -57,16 +58,17 @@ int read_graph(FILE* file, Vertex ***vertices, int* num_vertices, Edge ***edges,
 			max_degree = (*vertices)[index_v2]->degree;
 		}
 
-		std::cout << (*edges)[i] << ": " << (*vertices)[index_v1] << " " << (*vertices)[index_v2] << std::endl;
+		//std::cout << (*edges)[i] << ": " << (*vertices)[index_v1] << " " << (*vertices)[index_v2] << std::endl;
 	}
 
+	/*
 	std::cout <<std::endl << "-----VERTICES-----";
 	for (int i = 0; i < *num_vertices; i++) {
 		std::cout << std::endl << (*vertices)[i] << ": ";
 		for (int j = 0; j < (*vertices)[i]->degree; j++) {
 			std::cout << (*vertices)[i]->edges[j] << " ";
 		}
-	}
+	}*/
 
 	return max_degree;
 }
@@ -135,7 +137,9 @@ int add_vertex_edges(std::vector<Vertex*>* vertices, int max_degree, Vertex* rem
 	return max_degree;
 }
 
-bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int uncovered_actual, int* uncovered_best) {
+bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int uncovered_actual, int* uncovered_best, int* node_count) {
+	(*node_count)++;
+	//std::cout << "Node count: " << *node_count << std::endl;
 
 	if (uncovered_actual == 0 || *uncovered_best == 0) { //prunes tree
 		*uncovered_best = 0;
@@ -164,7 +168,7 @@ bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int unc
 			l -= vertices[i].size();
 		}
 	}
-	if (uncovered_actual - bound > *uncovered_best) {
+	if (uncovered_actual - bound >= *uncovered_best) {
 		return false;
 	}
 
@@ -174,7 +178,7 @@ bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int unc
 	removed_vertex->setCovered();
 	uncovered_actual -= removed_vertex->degree;
 	k--;
-	if ( min_cover(vertices, vertices_size, k, uncovered_actual, uncovered_best) ){
+	if ( min_cover(vertices, vertices_size, k, uncovered_actual, uncovered_best, node_count) ){
 		return true;
 	}
 
@@ -187,7 +191,7 @@ bool min_cover(std::vector<Vertex*>* vertices, int vertices_size, int k, int unc
 		removed_vertex->setUncovered();
 		uncovered_actual += removed_vertex->degree;
 		k++;
-		if ( min_cover(vertices, vertices_size, k, uncovered_actual, uncovered_best) ) {
+		if ( min_cover(vertices, vertices_size, k, uncovered_actual, uncovered_best, node_count) ) {
 			return true;
 		}
 	}
@@ -217,28 +221,40 @@ int main(int argc, char* argv[]) {
 			return 1;
 		}
 
+		std::chrono::high_resolution_clock::time_point start_time, end_time;
+		std::chrono::duration<double> time_span;
+		start_time = std::chrono::high_resolution_clock::now();
 		Vertex **vertices;
 		Edge **edges;
 		int num_vertices, num_edges, max_degree;
 		max_degree = read_graph(file, &vertices, &num_vertices, &edges, &num_edges);
-
 		printf("\nexit success:\n%i %i %i\n", num_vertices, num_edges, max_degree);
 		fclose(file);
 
 		//creates a list of vertices ordered by degree
 		std::vector<Vertex*>* vertices_by_degree = new std::vector<Vertex*>[max_degree + 1];
-
 		for (int i = 0; i < num_vertices; i++) {
 			vertices_by_degree[vertices[i]->degree].push_back(vertices[i]);
 		}
-
+		end_time = std::chrono::high_resolution_clock::now();
+		time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time);
+		std::cout << "Time to pre-process (read file and create necessary vectors): " << 
+			time_span.count() << " seconds" << std::endl;
+		/*
 		std::cout << "------DEGREES-----" << std::endl;
 		for (int i = 0; i < max_degree + 1; i++) {
 			std::cout << i << ": " << vertices_by_degree[i].size() << std::endl;
-		}
+		}*/
 
-		std::cout << k << "-sized vertex cover? " <<	min_cover(vertices_by_degree, 
-			max_degree + 1, k, num_edges, &num_edges) << std::endl;
+		start_time = std::chrono::high_resolution_clock::now();
+		int node_count = 0;
+		bool result = min_cover(vertices_by_degree, max_degree + 1, k, num_edges, &num_edges, &node_count);
+		end_time = std::chrono::high_resolution_clock::now();
+		time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time);
+		std::cout << "Time to compute exact answer: " << time_span.count() << " seconds" << std::endl;
+
+
+		std::cout << std::endl << "OUTPUT: " << k << "-sized vertex cover? " << result << std::endl;
 	}
 	else {
 		std::cout << "Invalid number of arguments. Two arguments expected:" << std::endl <<
