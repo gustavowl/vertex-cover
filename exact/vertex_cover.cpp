@@ -255,6 +255,7 @@ int main(int argc, char* argv[]) {
 
 
 		std::cout << std::endl << "OUTPUT: " << k << "-sized vertex cover? " << result << std::endl;
+		std::cout << "Amount of tree nodes explored: " << node_count << std::endl;
 	}
 	else {
 		std::cout << "Invalid number of arguments. Two arguments expected:" << std::endl <<
