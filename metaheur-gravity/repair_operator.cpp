@@ -3,12 +3,20 @@
 //arg1: solution vector for which the repair operator will be applied
 //arg2: the transpose of the adjacency matrix
 void repair_operator(float **solution_vector, int **transp_adj_matrix, int num_vertices) {
-	rpr_oprtr_add_phase(solution_vector, transp_adj_matrix, num_vertices);
-	rpr_oprtr_drop_phase(solution_vector, transp_adj_matrix, num_vertices);
+	int* zero_entries;
+	int zero_size = rpr_oprtr_add_phase(solution_vector, transp_adj_matrix,
+		num_vertices, &zero_entries);
+
+	if (zero_size > 0) {
+		rpr_oprtr_drop_phase(solution_vector, transp_adj_matrix, num_vertices,
+			&zero_entries);
+		delete[] zero_entries;
+	}
 }
 
 //used internally
-void rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices) {
+int rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices,
+	int** zero_entries) {
 	/*
 	(i)C = S × B ( matrix multiplication)
 	(ii) ADD Phase
@@ -22,23 +30,22 @@ void rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int n
 	float* c = rpr_oprtr_multiply(solution_vector, transp_adj_matrix, num_vertices);
 	
 	//(ii)(a)
-	int* zero_entries;
 	int zero_entries_size = rpr_oprtr_find_zero_entries(c, transp_adj_matrix,
-		num_vertices, &zero_entries);
+		num_vertices, zero_entries);
 	
 	//(b)(c)
 	for (int i = 0; i < zero_entries_size; i++) {
-		(*solution_vector)[zero_entries[i]] = 1;
+		(*solution_vector)[(*zero_entries)[i]] = 1;
 	}
 
-	if (zero_entries_size > 0) {
-		delete[] zero_entries;
-	}
 	delete[] c;
+
+	return zero_entries_size;
 }
 
 //used internally
-void rpr_oprtr_drop_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices) {
+void rpr_oprtr_drop_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices,
+	int** zero_entries) {
 /*
 (iii)DROP Phase
 (a) Identify the column j ( cost in the decreasing order)

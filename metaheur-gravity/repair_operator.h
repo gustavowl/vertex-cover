@@ -6,10 +6,12 @@
 void repair_operator(float **solution_vector, int **transp_adj_matrix, int num_vertices);
 
 //used internally
-void rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices);
+int rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices,
+	int** zero_entries);
 
 //used internally
-void rpr_oprtr_drop_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices);
+void rpr_oprtr_drop_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices,
+	int** zero_entries);
 
 //used internally
 float* rpr_oprtr_multiply(float **vector, int **transp_adj_matrix, int num_vertices);
