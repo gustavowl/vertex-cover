@@ -1,5 +1,5 @@
-#ifndef _VERTEX_H_
-#define _VERTEX_H_
+#ifndef __READ_FILE_H__
+#define __READ_FILE_H__
 
 #include <iostream>
 #include <string.h>
