@@ -18,10 +18,18 @@ void rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int n
 	(c) D = S ( temporary )
 	*/
 
+	//(i)
 	float* c = rpr_oprtr_multiply(solution_vector, transp_adj_matrix, num_vertices);
+	
+	//(ii)(a)
 	int* zero_entries;
 	int zero_entries_size = rpr_oprtr_find_zero_entries(c, transp_adj_matrix,
 		num_vertices, &zero_entries);
+	
+	//(b)(c)
+	for (int i = 0; i < zero_entries_size; i++) {
+		(*solution_vector)[zero_entries[i]] = 1;
+	}
 
 	if (zero_entries_size > 0) {
 		delete[] zero_entries;
