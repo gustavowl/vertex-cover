@@ -12,8 +12,26 @@ void rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int n
 void rpr_oprtr_drop_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices);
 
 //used internally
-void rpr_oprtr_cost_of_column(int col, int **transp_adj_matrix, int num_vertices);
+float* rpr_oprtr_multiply(float **vector, int **transp_adj_matrix, int num_vertices);
 
-float** rpr_oprtr_multiply(float **vector, int **transp_adj_matrix, int num_vertices);
+//used internally
+int rpr_oprtr_cost_of_column(int col, int **transp_adj_matrix, int num_vertices);
+
+//used internally
+int rpr_oprtr_find_zero_entries(float* vector, int **transp_adj_matrix, int num_vertices,
+	int** j_col_index);
+
+//used internally. Based on
+//https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py
+//implementation of Cormen version
+void quick_sort(int* vector, int start, int end, int* bijec_vector);
+
+//used internally. Based on
+//https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py
+//implementation of Cormen version
+int order_pivot(int* vector, int start, int end, int* bijec_vector);
+
+//used internally
+void swap(int* vector, int index1, int index2);
 
 #endif
