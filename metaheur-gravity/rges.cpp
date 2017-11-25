@@ -212,7 +212,7 @@ float** rges_compute_fdi(float gravitational_constant, float* mi, float** soluti
 	//initializes fdi
 	float** fdi = new float*[sols_size];
 	for (int i = 0; i < sols_size; i++) {
-		fdi[i] = new float[sols_size];
+		fdi[i] = new float[num_vertices];
 		for (int j = 0; j < num_vertices; j++) {
 			fdi[i][j] = 0.0;
 		}
