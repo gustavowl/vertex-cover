@@ -159,7 +159,13 @@ void rges_comput_Mi(float* mi, int size) {
 }
 
 void rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations) {
-	int k = 10; //TODO: Linearly compute k
+	//Computes k linearly
+	float m = (float)(1 - *size) / (max_iterations/* - 0*/);
+	//equation of line is given by
+	float y = m * iteration + (*size);
+	int k = (int)ceil(y);
+
+	//Determines de k-best solutions
 	if (k < *size) {
 		//increase exploitation
 		rges_quick_sort(mi, 0, *size, solutions);
