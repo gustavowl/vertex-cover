@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 		//starts metaheuristic
 		float *solution = rges_run(adj_matrix, num_vertices, init_solutions, num_iterations);
 
-		std::cout << "SOLUTION: ";
+		std::cout << std::endl << std::endl << "SOLUTION: ";
 		for (int i = 0; i < num_vertices; i++) {
 			std::cout << solution[i] << " ";
 		}
