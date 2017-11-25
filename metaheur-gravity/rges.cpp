@@ -75,7 +75,7 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		rges_compute_mi(mi, fit, init_solutions, best, worst);
 		rges_comput_Mi(mi, init_solutions);
 
-
+		//(f) Calculation of the total force in different directions.
 
 
 		iteration++;
@@ -86,6 +86,7 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		delete[] fit;
 	}
 
+	//assert(init_solutions == 1)
 	for (int i = 1; i < init_solutions; i++) {
 		delete[] solutions[i];
 	}
@@ -155,4 +156,71 @@ void rges_comput_Mi(float* mi, int size) {
 	for (int i = 0; i < size; i++) {
 		mi[i] /= sum_mi;
 	}
+}
+
+void rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations) {
+	int k = 10;
+	if (k < *size) {
+		//increase exploitation
+		rges_quick_sort(mi, 0, *size, solutions);
+		for (int i = *size - 1; i > k ; i--) {
+			regs_swap(mi, i, i - k);
+			regs_swap(solutions, i, i - k);
+		}
+		for (int i = k; i < *size; i++) {
+			delete[] solutions[i];
+		}
+		*size = k;
+	}
+}
+
+//TODO: Implement general version (using template)
+//used internally. Based on
+//https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py
+//implementation of Cormen version
+void rges_quick_sort(float* vector, int start, int end, float** bijec_vector) {
+	if (start < end) {
+		int pivot_pos = regs_order_pivot(vector, start, end, bijec_vector);
+		regs_quick_sort(vector, start, pivot_pos, bijec_vector);
+		regs_quick_sort(vector, pivot_pos + 1, end, bijec_vector);
+	}
+}
+
+//TODO: Implement general version (using template)
+//used internally. Based on
+//https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py
+//implementation of Cormen version
+int rges_order_pivot(float* vector, int start, int end, float** bijec_vector) {
+	if (start < end) {
+		int pivot_pos = start;
+		for (int i = start + 1; i < end; i++) {
+			if (vector[i] < vector[pivot_pos]) {
+				if (i > pivot_pos + 1) {
+					regs_swap(vector, i, pivot_pos + 1);
+					regs_swap(bijec_vector, i, pivot_pos + 1);
+				}
+				regs_swap(vector, pivot_pos, pivot_pos + 1);
+				regs_swap(bijec_vector, pivot_pos, pivot_pos + 1);
+				pivot_pos++;
+			}
+		}
+		return pivot_pos;
+	}
+	return start;
+}
+
+//TODO: Implement general version (using template)
+//used internally
+void rges_swap(float* vector, int index1, int index2) {
+	float aux = vector[index1];
+	vector[index1] = vector[index2];
+	vector[index2] = aux;
+}
+
+//TODO: Implement general version (using template)
+//used internally
+void rges_swap(float** vector, int index1, int index2) {
+	float* aux = vector[index1];
+	vector[index1] = vector[index2];
+	vector[index2] = aux;
 }

@@ -26,16 +26,19 @@ int rpr_oprtr_find_zero_entries(float* vector, int **transp_adj_matrix, int num_
 //used internally
 bool rpr_oprtr_vector_has_zero_entry(float* vector, int num_vertices);
 
+//TODO: Implement general version (using template)
 //used internally. Based on
 //https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py
 //implementation of Cormen version
 void quick_sort(int* vector, int start, int end, int* bijec_vector);
 
+//TODO: Implement general version (using template)
 //used internally. Based on
 //https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py
 //implementation of Cormen version
 int order_pivot(int* vector, int start, int end, int* bijec_vector);
 
+//TODO: Implement general version (using template)
 //used internally
 void swap(int* vector, int index1, int index2);
 

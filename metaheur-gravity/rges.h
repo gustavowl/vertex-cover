@@ -42,4 +42,29 @@ void rges_compute_mi(float* mi, float* fit, int size, float best, float worst);
 //Mi is defined as Mi = mi / summation(mi)
 void rges_comput_Mi(float* mi, int size);
 
+//the kbest are defined in terms of the objects with the best fit and greatest
+//mass. Since mi depends on fitness, we just use it to compute the kbest.
+//the value "k" will be computed accordingly to the iteration number.
+//"k" is computed in such a way that only after the last iteration k = 1.
+void rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations);
+
+//TODO: Implement general version (using template)
+//used internally. Based on
+//https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py
+//implementation of Cormen version
+void rges_quick_sort(float* vector, int start, int end, float** bijec_vector);
+
+//TODO: Implement general version (using template)
+//used internally. Based on
+//https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py
+//implementation of Cormen version
+int rges_order_pivot(float* vector, int start, int end, float** bijec_vector);
+
+//TODO: Implement general version (using template)
+//used internally
+void rges_swap(float* vector, int index1, int index2);
+
+//TODO: Implement general version (using template)
+//used internally
+void rges_swap(float** vector, int index1, int index2);
 #endif
