@@ -190,11 +190,34 @@ float** rges_compute_fdi(float gravitational_constant, float* mi, float** soluti
 	float** fdi = new float*[sols_size];
 	for (int i = 0; i < sols_size; i++) {
 		fdi[i] = new float[num_vertices];
+		for (int j = 0; j < num_vertices; j++) {
+			fdi[i][j] = 0.0;
+		}
 	}
-	
 
+	//computes fdi
+	srand(time(NULL));
+	double r;
 
-	return 0;
+	for (int j = 0; j < k; j++) {
+		for (int i = 0; i < sols_size; i++) {
+			if (j != i) {
+				float euclid = rges_compute_euclidian(solutions[i], solutions[j],
+					num_vertices);
+
+				for (int d = 0; d < num_vertices; d++) {
+					float force = rges_compute_fdij(gravitational_constant, mi, i,
+					 	j, euclid, solutions, d);
+
+					r = rand();
+					r /= RAND_MAX; //range: [0, 1]
+					fdi[i][d] += force * (float)r;
+				}
+			}
+		}
+	}
+
+	return fdi;
 }
 
 int rges_kbest(float** solutions, float* mi, int size, int iteration, int max_iterations) {
