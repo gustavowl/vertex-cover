@@ -159,13 +159,13 @@ void rges_comput_Mi(float* mi, int size) {
 }
 
 void rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations) {
-	int k = 10;
+	int k = 10; //TODO: Linearly compute k
 	if (k < *size) {
 		//increase exploitation
 		rges_quick_sort(mi, 0, *size, solutions);
 		for (int i = *size - 1; i > k ; i--) {
-			regs_swap(mi, i, i - k);
-			regs_swap(solutions, i, i - k);
+			rges_swap(mi, i, i - k);
+			rges_swap(solutions, i, i - k);
 		}
 		for (int i = k; i < *size; i++) {
 			delete[] solutions[i];
@@ -180,9 +180,9 @@ void rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_
 //implementation of Cormen version
 void rges_quick_sort(float* vector, int start, int end, float** bijec_vector) {
 	if (start < end) {
-		int pivot_pos = regs_order_pivot(vector, start, end, bijec_vector);
-		regs_quick_sort(vector, start, pivot_pos, bijec_vector);
-		regs_quick_sort(vector, pivot_pos + 1, end, bijec_vector);
+		int pivot_pos = rges_order_pivot(vector, start, end, bijec_vector);
+		rges_quick_sort(vector, start, pivot_pos, bijec_vector);
+		rges_quick_sort(vector, pivot_pos + 1, end, bijec_vector);
 	}
 }
 
@@ -196,11 +196,11 @@ int rges_order_pivot(float* vector, int start, int end, float** bijec_vector) {
 		for (int i = start + 1; i < end; i++) {
 			if (vector[i] < vector[pivot_pos]) {
 				if (i > pivot_pos + 1) {
-					regs_swap(vector, i, pivot_pos + 1);
-					regs_swap(bijec_vector, i, pivot_pos + 1);
+					rges_swap(vector, i, pivot_pos + 1);
+					rges_swap(bijec_vector, i, pivot_pos + 1);
 				}
-				regs_swap(vector, pivot_pos, pivot_pos + 1);
-				regs_swap(bijec_vector, pivot_pos, pivot_pos + 1);
+				rges_swap(vector, pivot_pos, pivot_pos + 1);
+				rges_swap(bijec_vector, pivot_pos, pivot_pos + 1);
 				pivot_pos++;
 			}
 		}
