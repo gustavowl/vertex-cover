@@ -86,7 +86,6 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		delete[] fit;
 	}
 
-	//assert(init_solutions == 1)
 	for (int i = 1; i < init_solutions; i++) {
 		delete[] solutions[i];
 	}
@@ -158,7 +157,7 @@ void rges_comput_Mi(float* mi, int size) {
 	}
 }
 
-void rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations) {
+int rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations) {
 	//Computes k linearly
 	float m = (float)(1 - *size) / (max_iterations/* - 0*/);
 	//equation of line is given by
@@ -173,11 +172,13 @@ void rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_
 			rges_swap(mi, i, i - k);
 			rges_swap(solutions, i, i - k);
 		}
-		for (int i = k; i < *size; i++) {
+		/*for (int i = k; i < *size; i++) {
 			delete[] solutions[i];
 		}
-		*size = k;
+		*size = k;*/
+		return k;
 	}
+	return *size;
 }
 
 //TODO: Implement general version (using template)

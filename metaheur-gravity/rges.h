@@ -46,7 +46,8 @@ void rges_comput_Mi(float* mi, int size);
 //mass. Since mi depends on fitness, we just use it to compute the kbest.
 //the value "k" will be computed accordingly to the iteration number.
 //"k" is computed in such a way that only after the last iteration k = 1.
-void rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations);
+//Returns the value of k.
+int rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations);
 
 //TODO: Implement general version (using template)
 //used internally. Based on
