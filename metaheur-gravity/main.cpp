@@ -76,10 +76,10 @@ int main(int argc, char* argv[]) {
 		delete[] solution;
 	}
 	else {
-		std::cout << "Invalid number of arguments. Two arguments expected:" << std::endl <<
+		std::cout << "Invalid number of arguments. Five arguments expected:" << std::endl <<
 		"1 - filename" << std::endl << "2 - number of initial solutions" << std::endl <<
 		"3 - number of iterations" << std::endl << "4 - t0 (Initial time of the universe)" <<
-		"5 - beta (range: (0, 1))";
+		std::endl << "5 - beta (range: (0, 1))" << std::endl;
 	}
 
 	return 0;

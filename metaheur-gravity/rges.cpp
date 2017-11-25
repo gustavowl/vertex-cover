@@ -211,7 +211,7 @@ float** rges_compute_fdi(float gravitational_constant, float* mi, float** soluti
 	//initializes fdi
 	float** fdi = new float*[sols_size];
 	for (int i = 0; i < sols_size; i++) {
-		fdi[i] = new float[num_vertices];
+		fdi[i] = new float[sols_size];
 		for (int j = 0; j < num_vertices; j++) {
 			fdi[i][j] = 0.0;
 		}
@@ -342,8 +342,11 @@ void rges_compute_acceleration(float** fdi, float* mi, int sols_size, int num_ve
 
 	for (int i = 0; i < sols_size; i++) {
 		for (int d = 0; d < num_vertices; d++) {
-			adi[i][d] = fdi[i][d] / mi[i];
+			//std::cout << fdi[i][d] << " / " << mi[i];
+			(mi[i] != 0) ? adi[i][d] = fdi[i][d] / mi[i] : 0.0;
+			//std::cout << " = " << adi[i][d] << " (" << (mi[i] == 0) << std::endl;
 		}
+		//std::cout << "----------------" << std::endl;
 	}
 }
 
@@ -353,15 +356,21 @@ void rges_compute_velocity(float** vdi, float** adi, int sols_size, int num_vert
 		for (int d = 0; d < num_vertices; d++) {
 			r = rand();
 			r /= RAND_MAX; //range: [0, 1]
+			//std::cout << r << " * " << vdi[i][d] << " + " << adi[i][d];
 			vdi[i][d] = r * vdi[i][d] + adi[i][d];
+			//std::cout << " = " << vdi[i][d] << std::endl;
 		}
+		//std::cout << "----------------" << std::endl;
 	}
 }
 
 void rges_compute_position(float** xdi, float** vdi, int sols_size, int num_vertices) {
 	for (int i = 0; i < sols_size; i++) {
 		for (int d = 0; d < num_vertices; d++) {
+			//std::cout << xdi[i][d] << " + " << vdi[i][d] << " = ";
 			xdi[i][d] += vdi[i][d];
+			//std::cout << xdi[i][d] << std::endl;
 		}
+		//std::cout << "----------------" << std::endl;
 	}
 }
