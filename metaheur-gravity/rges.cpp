@@ -106,6 +106,9 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		rges_compute_acceleration(fdi, mi, init_solutions, num_vertices, fdi);
 		rges_compute_velocity(vdi, fdi, init_solutions, num_vertices);
 
+		//(h) Updating agents’ position.
+		rges_compute_position(solutions, vdi, init_solutions, num_vertices);
+
 
 		iteration++;
 	}
@@ -351,6 +354,14 @@ void rges_compute_velocity(float** vdi, float** adi, int sols_size, int num_vert
 			r = rand();
 			r /= RAND_MAX; //range: [0, 1]
 			vdi[i][d] = r * vdi[i][d] + adi[i][d];
+		}
+	}
+}
+
+void rges_compute_position(float** xdi, float** vdi, int sols_size, int num_vertices) {
+	for (int i = 0; i < sols_size; i++) {
+		for (int d = 0; d < num_vertices; d++) {
+			xdi[i][d] += vdi[i][d];
 		}
 	}
 }

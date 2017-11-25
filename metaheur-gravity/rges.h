@@ -92,4 +92,7 @@ void rges_compute_acceleration(float** fdi, float* mi, int sols_size, int num_ve
 
 //used internally
 void rges_compute_velocity(float** vdi, float** adi, int sols_size, int num_vertices);
+
+//usded internally
+void rges_compute_position(float** xdi, float** vdi, int sols_size, int num_vertices);
 #endif
