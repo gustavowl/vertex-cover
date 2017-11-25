@@ -42,12 +42,17 @@ void rges_compute_mi(float* mi, float* fit, int size, float best, float worst);
 //Mi is defined as Mi = mi / summation(mi)
 void rges_compute_Mi(float* mi, int size);
 
+//used internally
+//returns the fdi matrix
+float** rges_compute_fdi(float gravitational_constant, float* mi, float** solutions,
+	int sols_size, int num_vertices, int iteration, int max_iterations);
+
 //the kbest are defined in terms of the objects with the best fit and greatest
 //mass. Since mi depends on fitness, we just use it to compute the kbest.
 //the value "k" will be computed accordingly to the iteration number.
 //"k" is computed in such a way that only after the last iteration k = 1.
 //Returns the value of k.
-int rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations);
+int rges_kbest(float** solutions, float* mi, int size, int iteration, int max_iterations);
 
 //TODO: Implement general version (using template)
 //used internally. Based on
@@ -68,4 +73,16 @@ void rges_swap(float* vector, int index1, int index2);
 //TODO: Implement general version (using template)
 //used internally
 void rges_swap(float** vector, int index1, int index2);
+
+//used internally
+//note: on the article, fdij is defined the force from "j" acting on "i" as:
+//gravitational_constant * (mi * mj) / (euclid(i, j)) * (xid - xid)
+//where xid is the position (x) of the solution (i) regarding the dimension (d)
+//I believe there's a typo. Hence, the following formula is used:
+//gravitational_constant * (mi * mj) / (euclid(i, j)) * (xjd - xid)
+float rges_compute_fdij(float gravitational_constant, float* mi, int i,
+	int j, float euclid, float** solutions, int d);
+
+//used internally
+float rges_compute_euclidian(float* vector1, float* vector2, int size);
 #endif

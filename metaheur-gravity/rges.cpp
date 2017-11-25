@@ -39,6 +39,7 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 
 	int iteration = 0;
 	float* fit = 0;
+	float** fdi = 0;
 	while (iteration < num_iterations) {
 		//(c) Repair operator.
 		for (int i = 0; i < init_solutions; i++) {
@@ -54,7 +55,11 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		}
 
 		//(d) Fitness evaluation of agents
-		float* fit = rges_fitness(solutions, init_solutions, num_vertices);
+		//deallocates memory
+		if (fit != 0) {
+			delete[] fit;
+		}
+		fit = rges_fitness(solutions, init_solutions, num_vertices);
 		std::cout << std::endl << "fit:" << init_solutions << std::endl;
 		for (int i = 0; i < init_solutions; i++) {
 			std::cout << fit[i] << " ";
@@ -76,7 +81,15 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		rges_compute_Mi(mi, init_solutions);
 
 		//(f) Calculation of the total force in different directions.
-		r
+		//deallocates memory
+		if (fdi != 0) {
+			for (int i = 0; i < init_solutions; i++) {
+				delete[] fdi[i];
+			}
+			delete[] fdi;
+		}
+		fdi = rges_compute_fdi(grav_const, mi, solutions, init_solutions,
+			num_vertices, iteration, num_iterations);
 
 
 		iteration++;
@@ -85,6 +98,14 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 	//deallocates memory
 	if (fit != 0) {
 		delete[] fit;
+	}
+
+	//deallocates memory
+	if (fdi != 0) {
+		for (int i = 0; i < init_solutions; i++) {
+			delete[] fdi[i];
+		}
+		delete[] fdi;
 	}
 
 	for (int i = 1; i < init_solutions; i++) {
@@ -158,18 +179,36 @@ void rges_compute_Mi(float* mi, int size) {
 	}
 }
 
-int rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_iterations) {
+//used internally
+//returns the fdi matrix
+float** rges_compute_fdi(float gravitational_constant, float* mi, float** solutions,
+	int sols_size, int num_vertices, int iteration, int max_iterations) {
+	//computes k-best
+	int k = rges_kbest(solutions, mi, sols_size, iteration, max_iterations);
+
+	//initializes fdi
+	float** fdi = new float*[sols_size];
+	for (int i = 0; i < sols_size; i++) {
+		fdi[i] = new float[num_vertices];
+	}
+	
+
+
+	return 0;
+}
+
+int rges_kbest(float** solutions, float* mi, int size, int iteration, int max_iterations) {
 	//Computes k linearly
-	float m = (float)(1 - *size) / (max_iterations/* - 0*/);
+	float m = (float)(1 - size) / (max_iterations/* - 0*/);
 	//equation of line is given by
-	float y = m * iteration + (*size);
+	float y = m * iteration + (size);
 	int k = (int)ceil(y);
 
 	//Determines de k-best solutions
-	if (k < *size) {
+	if (k < size) {
 		//increase exploitation
-		rges_quick_sort(mi, 0, *size, solutions);
-		for (int i = *size - 1; i > k ; i--) {
+		rges_quick_sort(mi, 0, size, solutions);
+		for (int i = size - 1; i > k ; i--) {
 			rges_swap(mi, i, i - k);
 			rges_swap(solutions, i, i - k);
 		}
@@ -179,7 +218,7 @@ int rges_kbest(float** solutions, float* mi, int* size, int iteration, int max_i
 		*size = k;*/
 		return k;
 	}
-	return *size;
+	return size;
 }
 
 //TODO: Implement general version (using template)
@@ -231,4 +270,25 @@ void rges_swap(float** vector, int index1, int index2) {
 	float* aux = vector[index1];
 	vector[index1] = vector[index2];
 	vector[index2] = aux;
+}
+
+//used internally
+//note: on the article, fdij is defined the force from "j" acting on "i" as:
+//gravitational_constant * (mi * mj) / (euclid(i, j)) * (xid - xid)
+//where xid is the position (x) of the solution (i) regarding the dimension (d)
+//I believe there's a typo. Hence, the following formula is used:
+//gravitational_constant * (mi * mj) / (euclid(i, j)) * (xjd - xid)
+float rges_compute_fdij(float gravitational_constant, float* mi, int i,
+	int j, float euclid, float** solutions, int d) {
+	
+	return gravitational_constant * mi[i] * mi[j] / euclid *
+		(solutions[j][d] - solutions[i][d]);
+}
+
+float rges_compute_euclidian(float* vector1, float* vector2, int size) {
+	float euclid = 0;
+	for (int i = 0; i < size; i++) {
+		euclid += pow( (vector1 - vector2), 2 );
+	}
+	return sqrt(euclid);
 }
