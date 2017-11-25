@@ -1,11 +1,12 @@
 #include "read_file.h"
 #include "rges.h"
 #include <iostream>
-/*#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <time.h>
+/*#include <string.h>
 #include <vector>
-#include <algorithm>
-#include <chrono>*/
+#include <algorithm>*/
+#include <chrono>
 
 int main(int argc, char* argv[]) {
 
@@ -20,15 +21,22 @@ int main(int argc, char* argv[]) {
 			return 1;
 		}
 
+		std::chrono::high_resolution_clock::time_point start_time, end_time;
+		std::chrono::duration<double> time_span;
+		start_time = std::chrono::high_resolution_clock::now();
 		int** adj_matrix; //adjacency Matrix
 		int num_vertices = read_graph(file, &adj_matrix);
+		end_time = std::chrono::high_resolution_clock::now();
+		time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time);
+		std::cout << "Time to pre-process (read file and create adjacency matrix): " << 
+			time_span.count() << " seconds" << std::endl;
 
 		std::cout << "Adjacency matrix:" << std::endl;
 		for (int i = 0; i < num_vertices; i++) {
 			for (int j = 0; j < num_vertices; j++) {
 				std::cout << adj_matrix[i][j] << " ";
 			}
-			std::cout << std::endl;
+			std::cout << "// " << i << std::endl;
 		}
 
 		int init_solutions = atoi(argv[2]);
@@ -63,15 +71,30 @@ int main(int argc, char* argv[]) {
 		pc.beta = beta;
 
 		//starts metaheuristic
+		start_time = std::chrono::high_resolution_clock::now();
 		float *solution = rges_run(adj_matrix, num_vertices, init_solutions, num_iterations, pc);
+		end_time = std::chrono::high_resolution_clock::now();
 
+		float prob = 0.0;
+		int cover = 0;
+		double r;
+		srand(time(NULL));
 		std::cout << std::endl << std::endl << "SOLUTION: ";
 		for (int i = 0; i < num_vertices; i++) {
 			std::cout << solution[i] << " ";
+			prob += solution[i];
+			r = rand();
+			r /= RAND_MAX; //[0, 1]
+			if ((float)r <= solution[i]) {
+				cover++;
+			}
 		}
 		std::cout << std::endl;
 
-		std::cout << "iterations needed: " << num_iterations << std::endl;
+		std::cout << "Probabilities sum: " << prob << std::endl;
+		std::cout << "Possible min cover: " << cover << std::endl;
+		//std::cout << "iterations needed: " << num_iterations << std::endl;
+		std::cout << "Time running metaheuristic: " << time_span.count() << " seconds" << std::endl;
 
 		delete[] solution;
 	}

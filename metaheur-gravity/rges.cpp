@@ -50,6 +50,7 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 	float* fit = 0;
 	float** fdi = 0;
 	while (iteration < num_iterations) {
+		std::cout << 100.0 * iteration / num_iterations << "%" << std::endl;
 		srand(time(NULL));
 
 		//(c) Repair operator.
@@ -57,13 +58,13 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 			repair_operator(&(solutions[i]), adj_matrix, num_vertices);
 		}
 
-		std::cout << std::endl << "repaired:" << std::endl;
+		/*std::cout << std::endl << "repaired:" << std::endl;
 		for (int i = 0; i < init_solutions; i++) {
 			for (int j = 0; j < num_vertices; j++) {
 				std::cout << solutions[i][j] << " ";
 			}
 			std::cout << std::endl;
-		}
+		}*/
 
 		//(d) Fitness evaluation of agents
 		//deallocates memory
@@ -71,11 +72,11 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 			delete[] fit;
 		}
 		fit = rges_fitness(solutions, init_solutions, num_vertices);
-		std::cout << std::endl << "fit:" << init_solutions << std::endl;
+		/*std::cout << std::endl << "fit:" << init_solutions << std::endl;
 		for (int i = 0; i < init_solutions; i++) {
 			std::cout << fit[i] << " ";
 		}
-		std::cout << std::endl;
+		std::cout << std::endl;*/
 
 		//(e) Update G(t)
 		float grav_const = rges_update_gravitational_constant(iteration, constants);
