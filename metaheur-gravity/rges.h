@@ -85,4 +85,11 @@ float rges_compute_fdij(float gravitational_constant, float* mi, int i,
 
 //used internally
 float rges_compute_euclidian(float* vector1, float* vector2, int size);
+
+//used internally
+void rges_compute_acceleration(float** fdi, float* mi, int sols_size, int num_vertices,
+	float** adi);
+
+//used internally
+void rges_compute_velocity(float** vdi, float** adi, int sols_size, int num_vertices);
 #endif

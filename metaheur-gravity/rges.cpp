@@ -37,10 +37,21 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		std::cout << std::endl;
 	}
 
+	float *vdi[init_solutions];
+	for (int i = 0; i < init_solutions; i++) {
+		float *row = new float[num_vertices];
+		vdi[i] = row;
+		for (int j = 0; j < num_vertices; j++) {
+			vdi[i][j] = 0.0;
+		}
+	}
+
 	int iteration = 0;
 	float* fit = 0;
 	float** fdi = 0;
 	while (iteration < num_iterations) {
+		srand(time(NULL));
+
 		//(c) Repair operator.
 		for (int i = 0; i < init_solutions; i++) {
 			repair_operator(&(solutions[i]), adj_matrix, num_vertices);
@@ -91,6 +102,10 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		fdi = rges_compute_fdi(grav_const, mi, solutions, init_solutions,
 			num_vertices, iteration, num_iterations);
 
+		//(g) Calculation of acceleration and velocity.
+		rges_compute_acceleration(fdi, mi, init_solutions, num_vertices, fdi);
+		rges_compute_velocity(vdi, fdi, init_solutions, num_vertices);
+
 
 		iteration++;
 	}
@@ -110,6 +125,10 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 
 	for (int i = 1; i < init_solutions; i++) {
 		delete[] solutions[i];
+	}
+
+	for (int i = 0; i < init_solutions; i++) {
+		delete[] vdi[i];
 	}
 	
 	return solutions[0]; //does not deallocate solution
@@ -196,7 +215,6 @@ float** rges_compute_fdi(float gravitational_constant, float* mi, float** soluti
 	}
 
 	//computes fdi
-	srand(time(NULL));
 	double r;
 
 	for (int j = 0; j < k; j++) {
@@ -314,4 +332,25 @@ float rges_compute_euclidian(float* vector1, float* vector2, int size) {
 		euclid += pow( (vector1 - vector2), 2 );
 	}
 	return sqrt(euclid);
+}
+
+void rges_compute_acceleration(float** fdi, float* mi, int sols_size, int num_vertices,
+	float** adi) {
+
+	for (int i = 0; i < sols_size; i++) {
+		for (int d = 0; d < num_vertices; d++) {
+			adi[i][d] = fdi[i][d] / mi[i];
+		}
+	}
+}
+
+void rges_compute_velocity(float** vdi, float** adi, int sols_size, int num_vertices) {
+	double r;
+	for (int i = 0; i < sols_size; i++) {
+		for (int d = 0; d < num_vertices; d++) {
+			r = rand();
+			r /= RAND_MAX; //range: [0, 1]
+			vdi[i][d] = r * vdi[i][d] + adi[i][d];
+		}
+	}
 }
