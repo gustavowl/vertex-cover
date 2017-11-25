@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <iostream> //FIXME: remove me
+#include <cmath>
 
 float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_iterations,
 	physicalConstants constants) {
@@ -59,6 +60,13 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 			std::cout << fit[i] << " ";
 		}
 		std::cout << std::endl;
+
+		//(e) Update G(t)
+		rges_update_gravitational_constant(iteration, constants);
+
+		//(e) Update best(t), worst(t) and Mi(t) for i = 1, 2, ..., N.
+
+		iteration++;
 	}
 
 	//deallocates memory
@@ -91,4 +99,11 @@ float* rges_fitness(float** solutions, int solutions_size, int num_vertices) {
 	}
 
 	return fit;
+}
+
+float rges_update_gravitational_constant(int iteration, physicalConstants constants) {
+	if (iteration > 0) {
+		return pow((float)constants.t0 / (constants.t0 + iteration), constants.beta);
+	}
+	return 1.0;
 }
