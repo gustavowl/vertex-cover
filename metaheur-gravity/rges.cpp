@@ -70,7 +70,13 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		//(e) Update worst(t)
 		float worst = rges_max(fit, init_solutions);
 
-		//Update Mi(t) for i = 1, 2, ..., N.
+		//(e)Update Mi(t) for i = 1, 2, ..., N.
+		float mi[init_solutions];
+		rges_compute_mi(mi, fit, init_solutions, best, worst);
+		rges_comput_Mi(mi, init_solutions);
+
+
+
 
 		iteration++;
 	}
@@ -132,4 +138,21 @@ float rges_max(float* fit, int size) {
 		}
 	}
 	return max;
+}
+
+void rges_compute_mi(float* mi, float* fit, int size, float best, float worst) {
+	for (int i = 0; i < size; i++) {
+		mi[i] = (fit[i] - worst) / (best - worst);
+	}
+}
+
+void rges_comput_Mi(float* mi, int size) {
+	float sum_mi = 0;
+	for (int i = 0; i < size; i++) {
+		sum_mi += mi[i];
+	}
+
+	for (int i = 0; i < size; i++) {
+		mi[i] /= sum_mi;
+	}
 }

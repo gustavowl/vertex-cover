@@ -36,4 +36,10 @@ float rges_min(float* fit, int size);
 
 float rges_max(float* fit, int size);
 
+//defined by mi(t) = (fit(t) - worst(t)) / (best(t) - worst(t))
+void rges_compute_mi(float* mi, float* fit, int size, float best, float worst);
+
+//Mi is defined as Mi = mi / summation(mi)
+void rges_comput_Mi(float* mi, int size);
+
 #endif
