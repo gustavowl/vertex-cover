@@ -62,7 +62,7 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		std::cout << std::endl;
 
 		//(e) Update G(t)
-		rges_update_gravitational_constant(iteration, constants);
+		float grav_const = rges_update_gravitational_constant(iteration, constants);
 
 		//(e) Update best(t), worst(t) and Mi(t) for i = 1, 2, ..., N.
 
