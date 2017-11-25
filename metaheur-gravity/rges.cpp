@@ -20,20 +20,20 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 	//(a) ??????
 	//(b) Randomized initialization.
 	srand(time(NULL));
-	double *solutions[init_solutions];
+	float *solutions[init_solutions];
 
 	for (int i = 0; i < init_solutions; i++) {
-		double *row = new double[num_vertices];
+		float *row = new float[num_vertices];
 		solutions[i] = row;
 		for (int j = 0; j < num_vertices; j++) {
 			double r = rand();
-			solutions[i][j] = r / RAND_MAX; //range: [0, 1]
+			solutions[i][j] = (float)(r / RAND_MAX); //range: [0, 1]
 		}
 	}
 
 	//(c) Repair operator.
 	for (int i = 0; i < init_solutions; i++) {
-		//repair_operator(&(solutions[i]), adj_matrix, num_vertices);
+		repair_operator(&(solutions[i]), adj_matrix, num_vertices);
 	}
 
 	//deallocates memory
