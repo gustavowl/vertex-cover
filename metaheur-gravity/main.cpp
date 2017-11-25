@@ -40,7 +40,13 @@ int main(int argc, char* argv[]) {
 			}
 			solution[i] = 0.0;
 		}
+
 		repair_operator(&solution, adj_matrix, num_vertices);
+
+		std::cout << "SOLUTION: ";
+		for (int i = 0; i < num_vertices; i++) {
+			std::cout << solution[i] << " ";
+		}
 	}
 	else {
 		std::cout << "Invalid number of arguments. Two arguments expected:" << std::endl <<

@@ -11,7 +11,7 @@ int rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int nu
 
 //used internally
 void rpr_oprtr_drop_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices,
-	int** zero_entries);
+	int** zero_entries, int zero_entries_size);
 
 //used internally
 float* rpr_oprtr_multiply(float **vector, int **transp_adj_matrix, int num_vertices);
@@ -22,6 +22,9 @@ int rpr_oprtr_cost_of_column(int col, int **transp_adj_matrix, int num_vertices)
 //used internally
 int rpr_oprtr_find_zero_entries(float* vector, int **transp_adj_matrix, int num_vertices,
 	int** j_col_index);
+
+//used internally
+bool rpr_oprtr_vector_has_zero_entry(float* vector, int num_vertices);
 
 //used internally. Based on
 //https://github.com/gustavowl/Algorithms-Cormen/blob/master/Chapter02/quick_sort_recursive.py

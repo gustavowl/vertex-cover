@@ -9,7 +9,7 @@ void repair_operator(float **solution_vector, int **transp_adj_matrix, int num_v
 
 	if (zero_size > 0) {
 		rpr_oprtr_drop_phase(solution_vector, transp_adj_matrix, num_vertices,
-			&zero_entries);
+			&zero_entries, zero_size);
 		delete[] zero_entries;
 	}
 }
@@ -45,15 +45,38 @@ int rpr_oprtr_add_phase(float **solution_vector, int **transp_adj_matrix, int nu
 
 //used internally
 void rpr_oprtr_drop_phase(float **solution_vector, int **transp_adj_matrix, int num_vertices,
-	int** zero_entries) {
-/*
-(iii)DROP Phase
-(a) Identify the column j ( cost in the decreasing order)
-(b) Remove j from D, if C = D × B have no zero entry, ie.,
-D(j) = 0.
-(c) S=D is a feasible solution for SCP that contains no
-redundant columns.
-*/
+	int** zero_entries, int zero_entries_size) {
+	/*
+	(iii)DROP Phase
+	(a) Identify the column j ( cost in the decreasing order)
+	(b) Remove j from D, if C = D × B have no zero entry, ie.,
+	D(j) = 0.
+	(c) S=D is a feasible solution for SCP that contains no
+	redundant columns.
+	*/
+
+	//(a) zero_entries has values with column js cost in increasing order
+	//just iterate in reverse order
+
+	//(b)
+	float *c;
+	for (int i = zero_entries_size - 1; i >= 0; i--) {
+		//remove column from D before multiplying then add value back?
+
+		//for now it is just multiplying
+		c = rpr_oprtr_multiply(solution_vector, transp_adj_matrix, num_vertices);
+
+		if (rpr_oprtr_vector_has_zero_entry(c, num_vertices)) {
+			//(c)
+			delete[] c;
+			break;
+		}
+
+		//has no zero entry, then
+		(*solution_vector)[(*zero_entries)[i]] = 0.0;
+		delete[] c;
+	}
+
 }
 
 float* rpr_oprtr_multiply(float **vector, int **transp_adj_matrix, int num_vertices) {
@@ -119,6 +142,15 @@ int rpr_oprtr_find_zero_entries(float* vector, int **transp_adj_matrix, int num_
 	}
 
 	return num_zeros;
+}
+
+bool rpr_oprtr_vector_has_zero_entry(float* vector, int num_vertices) {
+	for (int i = 0; i < num_vertices; i++) {
+		if (vector[i] == 0.0) {
+			return true;
+		}
+	}
+	return false;
 }
 
 //"vector" will be the one used for sorting. The bijec_vector
