@@ -4,7 +4,8 @@
 #include <time.h>
 #include <iostream> //FIXME: remove me
 
-float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_iterations) {
+float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_iterations,
+	physicalConstants constants) {
 	/*
 	(a) Search space identification.
 	(b) Randomized initialization.
