@@ -36,29 +36,36 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		std::cout << std::endl;
 	}
 
-	//(c) Repair operator.
-	for (int i = 0; i < init_solutions; i++) {
-		repair_operator(&(solutions[i]), adj_matrix, num_vertices);
-	}
+	int iteration = 0;
+	float* fit = 0;
+	while (iteration < num_iterations) {
+		//(c) Repair operator.
+		for (int i = 0; i < init_solutions; i++) {
+			repair_operator(&(solutions[i]), adj_matrix, num_vertices);
+		}
 
-	std::cout << std::endl << "repaired:" << std::endl;
-	for (int i = 0; i < init_solutions; i++) {
-		for (int j = 0; j < num_vertices; j++) {
-			std::cout << solutions[i][j] << " ";
+		std::cout << std::endl << "repaired:" << std::endl;
+		for (int i = 0; i < init_solutions; i++) {
+			for (int j = 0; j < num_vertices; j++) {
+				std::cout << solutions[i][j] << " ";
+			}
+			std::cout << std::endl;
+		}
+
+		//(d) Fitness evaluation of agents
+		float* fit = rges_fitness(solutions, init_solutions, num_vertices);
+		std::cout << std::endl << "fit:" << init_solutions << std::endl;
+		for (int i = 0; i < init_solutions; i++) {
+			std::cout << fit[i] << " ";
 		}
 		std::cout << std::endl;
 	}
 
-	//(d) Fitness evaluation of agents
-	float* fit = rges_fitness(solutions, init_solutions, num_vertices);
-	std::cout << std::endl << "fit:" << init_solutions << std::endl;
-	for (int i = 0; i < init_solutions; i++) {
-		std::cout << fit[i] << " ";
-	}
-	std::cout << std::endl;
-	delete[] fit;
-
 	//deallocates memory
+	if (fit != 0) {
+		delete[] fit;
+	}
+
 	for (int i = 1; i < init_solutions; i++) {
 		delete[] solutions[i];
 	}
