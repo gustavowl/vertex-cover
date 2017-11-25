@@ -1,5 +1,5 @@
 #include "read_file.h"
-#include "repair_operator.h"
+#include "rges.h"
 #include <stdio.h>
 /*#include <iostream>
 #include <stdlib.h>
@@ -32,21 +32,15 @@ int main(int argc, char* argv[]) {
 		}
 
 		//starts metaheuristic
-		float *solution = new float[7]; //{0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0}
-		for (int i = 0; i < 7; i++) {
-			if (i == 1 || i == 2) {
-				solution[i] = 1.0;
-				continue;
-			}
-			solution[i] = 0.0;
-		}
-
-		repair_operator(&solution, adj_matrix, num_vertices);
+		float *solution = rges_run(adj_matrix, num_vertices);
 
 		std::cout << "SOLUTION: ";
 		for (int i = 0; i < num_vertices; i++) {
 			std::cout << solution[i] << " ";
 		}
+		std::cout << std::endl;
+
+		delete[] solution;
 	}
 	else {
 		std::cout << "Invalid number of arguments. Two arguments expected:" << std::endl <<
