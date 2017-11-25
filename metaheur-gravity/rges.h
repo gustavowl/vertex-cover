@@ -32,4 +32,8 @@ float* rges_fitness(float** solutions, int solutions_size, int num_vertices);
 //t0 + 3, ..., t0 + number of iterations).
 float rges_update_gravitational_constant(int iteration, physicalConstants constants);
 
+float rges_min(float* fit, int size);
+
+float rges_max(float* fit, int size);
+
 #endif

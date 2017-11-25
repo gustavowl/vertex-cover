@@ -64,7 +64,13 @@ float* rges_run(int **adj_matrix, int num_vertices, int init_solutions, int num_
 		//(e) Update G(t)
 		float grav_const = rges_update_gravitational_constant(iteration, constants);
 
-		//(e) Update best(t), worst(t) and Mi(t) for i = 1, 2, ..., N.
+		//(e) Update best(t)
+		float best = rges_min(fit, init_solutions);
+
+		//(e) Update worst(t)
+		float worst = rges_max(fit, init_solutions);
+
+		//Update Mi(t) for i = 1, 2, ..., N.
 
 		iteration++;
 	}
@@ -106,4 +112,24 @@ float rges_update_gravitational_constant(int iteration, physicalConstants consta
 		return pow((float)constants.t0 / (constants.t0 + iteration), constants.beta);
 	}
 	return 1.0;
+}
+
+float rges_min(float* fit, int size) {
+	float min = fit[0];
+	for (int i = 1; i < size; i++) {
+		if (fit[i] < min) {
+			min = fit[i];
+		}
+	}
+	return min;
+}
+
+float rges_max(float* fit, int size) {
+	float max = fit[0];
+	for (int i = 1; i < size; i++) {
+		if (fit[i] > max) {
+			max = fit[i];
+		}
+	}
+	return max;
 }
