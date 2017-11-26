@@ -28,8 +28,6 @@ int main(int argc, char* argv[]) {
 		int num_vertices = read_graph(file, &adj_matrix);
 		end_time = std::chrono::high_resolution_clock::now();
 		time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time);
-		std::cout << "Time to pre-process (read file and create adjacency matrix): " << 
-			time_span.count() << " seconds" << std::endl;
 
 		std::cout << "Adjacency matrix:" << std::endl;
 		for (int i = 0; i < num_vertices; i++) {
@@ -94,6 +92,9 @@ int main(int argc, char* argv[]) {
 		std::cout << "Probabilities sum: " << prob << std::endl;
 		std::cout << "Possible min cover: " << cover << std::endl;
 		//std::cout << "iterations needed: " << num_iterations << std::endl;
+		std::cout << "Time to pre-process (read file and create adjacency matrix): " << 
+			time_span.count() << " seconds" << std::endl;
+		time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end_time - start_time);
 		std::cout << "Time running metaheuristic: " << time_span.count() << " seconds" << std::endl;
 
 		delete[] solution;
